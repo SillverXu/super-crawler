@@ -29,6 +29,8 @@ public class ConnectionServiceImpl implements ConnectionService {
     private CloseableHttpResponse httpresponse;
 
     /**
+     * Http Get 请求
+     *
      * @param url        请求地址
      * @param httpheader header信息
      * @return html 网页html
@@ -38,7 +40,7 @@ public class ConnectionServiceImpl implements ConnectionService {
     }
 
     public String HttpResquestGet(String url, Map<String, String> headers, int[] timout) {     //todo 传参预留延迟设置，暂时用默认值
-        if (url.length() < 11 ||!url.startsWith("http")||!url.startsWith("https")) {
+        if (url.length() < 11 || !url.startsWith("http")) {
             return null;
         }
         String html = null;
@@ -58,17 +60,19 @@ public class ConnectionServiceImpl implements ConnectionService {
                 html = responseEntityToString(httpresponse);
             }
         } catch (ClientProtocolException e) {
-            logger.error("httpget client error!"+e.getMessage(),e);
+            logger.error("httpget client error!" + e.getMessage(), e);
         } catch (IOException e) {
-            logger.error("httpget client ioerror!"+e.getMessage(),e);
+            logger.error("httpget client ioerror!" + e.getMessage(), e);
         } finally {
             closeClient(httpresponse, httpClient);
         }
         return html;
     }
+
     /**
      * phantomjs请求，为了延迟加载页面获取html
      * todo 抽象方法完善，目前只支持税务局页面
+     *
      * @url 请求地址
      */
     public String PhantomjsRequest(String url) {
@@ -87,6 +91,8 @@ public class ConnectionServiceImpl implements ConnectionService {
     }
 
     /**
+     * Http Post 请求
+     *
      * @param url        链接地址
      * @param httpparams post请求的参数
      * @param httpheader post请求的header
@@ -96,7 +102,7 @@ public class ConnectionServiceImpl implements ConnectionService {
     }
 
     public String HttpResquestPost(String url, List<BasicNameValuePair> httpparams, Map<String, String> httpheader, int[] timeout) {                               //todo 总结方法抽象出翻页方法
-        if (url.length() < 11 ||!url.startsWith("http")||!url.startsWith("https")) {
+        if (url.length() < 11 || !url.startsWith("http")) {
             return null;
         }
         String html = null;

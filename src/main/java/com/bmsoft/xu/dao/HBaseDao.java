@@ -62,11 +62,7 @@ public class HBaseDao {
         } catch (IOException e) {
             logger.error("Get data error: " + e.getMessage(), e);
         } finally {
-            try {
-                table.close();
-            } catch (IOException e) {
-                logger.error(e.getMessage(), e);
-            }
+            closeTable(table);
         }
         return result;
     }
@@ -108,6 +104,7 @@ public class HBaseDao {
             e.printStackTrace();
         } finally {
             resultScanner.close();
+            closeTable(table);
         }
         return listmap;
     }
@@ -129,18 +126,15 @@ public class HBaseDao {
             logger.info("获取表格失败");
             e.printStackTrace();
         } finally {
-            try {
-                table.close();
-            } catch (IOException e) {
-                logger.error("table close error!" + e.getMessage(), e);
-            }
+            closeTable(table);
         }
         return success;
     }
+
     /**
      * 存数据一条数据
      *
-     * @param put      数据条
+     * @param put       数据条
      * @param tableName 表名
      */
     public boolean saveDataByList(Put put, String tableName) {
@@ -153,12 +147,40 @@ public class HBaseDao {
         } catch (IOException e) {
             logger.error("get table error!" + e.getMessage(), e);
         } finally {
+            closeTable(table);
+        }
+        return success;
+    }
+
+    /**
+     * 判断数据库中有没有该条数据
+     *
+     * @param tableName 表名
+     * @param rowkey    行健
+     */
+    public boolean isDataExist(String tableName, String rowkey) {
+        boolean isExist = false;
+        table = HBaseIntial.getTable(tableName);
+        Get get = new Get(Bytes.toBytes(rowkey));
+        try {
+            isExist = table.exists(get);
+        } catch (IOException e) {
+            logger.error("check isExist error!" + e.getMessage(), e);
+        } finally {
+            closeTable(table);
+        }
+
+        return isExist;
+    }
+
+    public void closeTable(Table table) {
+        if (table != null) {
             try {
                 table.close();
             } catch (IOException e) {
                 logger.error("table close error!" + e.getMessage(), e);
             }
         }
-        return success;
     }
+
 }

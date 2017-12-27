@@ -9,18 +9,12 @@ import java.util.Map;
 import java.util.Set;
 
 public class SinglePageCrawler extends CommonCrawler {
-    private String url;
 
-    public String getUrl() {
-        return url;
+    public SinglePageCrawler(String url, String pinjieStr, boolean ispinjie) {
+        super(url, pinjieStr, ispinjie);
     }
 
-    public SinglePageCrawler(String url){
-        this.url = url;
-    }
-
-    @Override
-    public Set<String> getURLs(String url_start, String url_end, int pages, int requestType, Map<String, String> requestHeaders, List<BasicNameValuePair> requestParams, List<RuleBean> ruleList) {
-        return super.getURLs(url_start,requestType,requestHeaders,requestParams,ruleList);
+    public Set<String> getURLs(int requestType, Map<String, String> requestHeaders, List<BasicNameValuePair> requestParams, List<RuleBean> ruleList){
+        return getURLs(super.getUrl(),requestType,requestHeaders,requestParams,ruleList);
     }
 }

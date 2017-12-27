@@ -23,4 +23,6 @@ public interface DataService {
      * @param map
      */
     boolean saveDataByMap(Map<String, String> map);
+
+    boolean isDataExist(String rowkey);
 }

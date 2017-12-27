@@ -17,31 +17,35 @@ public class DataServiceImpl implements DataService {
     private HBaseDao hbasedao = new HBaseDao();
     private static final String TABLENAME = "audit1_data_test";
 
+    @Override
     public List<Map<String, String>> getdata(String tablename) {
         return hbasedao.getDatasByTablename(tablename);
     }
 
+    @Override
     public boolean saveDatasByList(List<Map<String, String>> listmap) {
         List<Put> puts = new ArrayList<Put>();
-        logger.info("开始存储list格式的数据，共有"+listmap.size()+"条数据！");
+        logger.info("开始存储list格式的数据，共有" + listmap.size() + "条数据！");
         for (int i = 0; i < listmap.size(); i++) {
-            Map<String,String> map = listmap.get(i);
+            Map<String, String> map = listmap.get(i);
             String rowkey = map.get("rowkey");
-            if(rowkey != null || !"".equals(rowkey)){
+            if (rowkey != null || !"".equals(rowkey)) {
                 Put put = new Put(Bytes.toBytes(rowkey));
                 map.remove(rowkey);
-                for (String s:map.keySet()) {
-                    put.addColumn(Bytes.toBytes("audit1"),Bytes.toBytes(s),Bytes.toBytes(map.get(s)));
+                for (String s : map.keySet()) {
+                    put.addColumn(Bytes.toBytes("audit1"), Bytes.toBytes(s), Bytes.toBytes(map.get(s)));
                 }
                 puts.add(put);
             }
-            }
-        return hbasedao.saveDatasByList(puts,TABLENAME);
         }
-    public boolean saveDataByMap(Map<String,String> map) {
+        return hbasedao.saveDataByList(puts, TABLENAME);
+    }
+
+    @Override
+    public boolean saveDataByMap(Map<String, String> map) {
         String rowkey = map.get("rowkey");
         Put put = null;
-        logger.info("开始存储数据，行号为："+rowkey);
+        logger.info("开始存储数据，行号为：" + rowkey);
         if (rowkey != null || !"".equals(rowkey)) {
             put = new Put(Bytes.toBytes(rowkey));
             map.remove(rowkey);
@@ -49,6 +53,12 @@ public class DataServiceImpl implements DataService {
                 put.addColumn(Bytes.toBytes("audit1"), Bytes.toBytes(s), Bytes.toBytes(map.get(s)));
             }
         }
-        return hbasedao.saveDataByList(put,TABLENAME);
+        return hbasedao.saveDataByList(put, TABLENAME);
+    }
+
+    @Override
+    public boolean isDataExist(String rowkey) {
+
+        return hbasedao.isDataExist(rowkey,TABLENAME);
     }
 }

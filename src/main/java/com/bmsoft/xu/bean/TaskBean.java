@@ -35,6 +35,7 @@ public class TaskBean {
         this.crawlerBean = crawlerBean;
         this.isPinjie = isPinjie;
         this.pinjieStr = pinjieStr;
+        this.ruleList = ruleList;
     }
 
     public Map<String, String> getRequestHeaders() {

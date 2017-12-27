@@ -16,24 +16,42 @@ import java.util.Set;
 
 import static com.bmsoft.xu.utils.Var.*;
 
-public abstract class CommonCrawler implements Crawling{
+public abstract class CommonCrawler implements Crawling {
     private static Logger logger = Logger.getLogger(CommonCrawler.class);
+
+    private String url;
+    private String pinjieStr;
+    private boolean ispinjie;
 
     private ConnectionService connectionService;
     private JsoupService jsoupService;
 
-    public CommonCrawler(){
+    public CommonCrawler(String url, String pinjieStr, boolean ispinjie) {
+        this.url = url;
+        this.pinjieStr = pinjieStr;
+        this.ispinjie = ispinjie;
+    }
+
+    public CommonCrawler() {
 
     }
 
+    public String getUrl() {
+        return this.url;
+    }
+
     /**
-     * Single page crawler
+     * 爬取一页的URL地址
      *
-     * @param url            absolute url
      * @param requestType
      * @param requestHeaders
-     * @param ruleList       method to crawl urls(only Jsoup now)
+     * @param requestParams
+     * @param ruleList
      */
+    public Set<String> getURLs(int requestType, Map<String, String> requestHeaders, List<BasicNameValuePair> requestParams, List<RuleBean> ruleList) {
+        return null;
+    }
+
     public Set<String> getURLs(String url, int requestType, Map<String, String> requestHeaders, List<BasicNameValuePair> requestParams, List<RuleBean> ruleList) {
         connectionService = new ConnectionServiceImpl();
         Set<String> set = new HashSet<String>();
@@ -55,10 +73,12 @@ public abstract class CommonCrawler implements Crawling{
                 html = connectionService.PhantomjsRequest(url);
                 break;
         }
-        System.out.println(html);
         Elements results = getResults(html, ruleList);
         results.forEach((r) -> {
             String link = r.select("a").attr("href");
+            if (ispinjie) {
+                link = pinjieStr + link;
+            }
             set.add(link);
         });
         return set;
